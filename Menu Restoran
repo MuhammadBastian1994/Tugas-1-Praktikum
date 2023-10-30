@@ -1,0 +1,119 @@
+import java.util.Scanner;
+public class Menu {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner (System.in);
+        String Makanan[] = {"Bakso Komplit (makan berat)", "Bakso Kuah (makan berat)","Bakso Goreng (Toping)","Bakso Jumbo (makan berat)","kerupuk (Toping)"};
+        int HargaMakanan[] = {20000, 15000, 3000, 25000, 1000};
+        String Minuman[] = {"Es Buah (Minuman)","Es Teh (Minuman)", "Es Jeruk (Minuman)", "Jeruk Panas (Minuman)", "Teh Panas (Minuman)"};
+        int HargaMinuman[] = {10000, 3000, 3000, 2500, 2500};
+        
+        String[] pesanan = new String[6];
+        int[] jumlahPesanan = new int[6];
+        String[] pesananMinum = new String [6];
+        int[] jumlahPesananMinum = new int [6];
+        double totalBiayaMakanan = 0;
+        double totalBiayaMinuman = 0;
+        
+    System.out.println("=====================================================");
+    System.out.println("Selamat Datang di warung kami Silahkan pilih Menunya:");
+    System.out.println("=====================================================");
+    for(int i=0; i< Makanan.length; i++) {
+        System.out.println((i+1) + "." + Makanan[i] + "- Rp." + HargaMakanan[i]);
+    }
+    System.out.println("(TEKAN ENTER JIKA SELESAI MEMESAN)");
+    
+    System.out.println("\nPilih menu Makanan (Contoh: Nomor Menu = Jumlah):");
+    for (int i=0; i<4; i++){
+        System.out.print("Pesanan Makanan " + (i+1) + ": ");
+        String input = scanner.nextLine();
+        
+        if(input.isEmpty()){
+            break;
+        }
+        
+        String[] inputsplit = input.split("=");
+        int nomorMenu = Integer.parseInt(inputsplit[0].trim())- 1;
+        int jumlah = Integer.parseInt(inputsplit[1].trim());
+        
+        if (nomorMenu >= 0 && nomorMenu < Makanan.length){
+            pesanan[i] = Makanan[nomorMenu];
+            jumlahPesanan[i] = jumlah;
+            totalBiayaMakanan += jumlah * HargaMakanan[nomorMenu];
+        }
+    }
+    
+    System.out.println("\nBerikut menu Minumannya:");
+    for(int i=0; i < Minuman.length; i++){
+        System.out.println((i+1) + ". " + Minuman[i] + "- Rp." + HargaMinuman[i]);
+    }
+    
+    System.out.println("\nPilih menu Minuman (Contoh: Nomor Menu - Jumlah):");
+    for(int i=0; i<4; i++){
+        System.out.print("Pesanan Minuman " + (i + 1) + ":");
+        String input = scanner.nextLine();
+        
+        if(input.isEmpty()){
+            break;
+        }
+        
+        String[] inputSplit = input.split("=");
+        int nomorMenu = Integer.parseInt(inputSplit[0].trim())- 1;
+        int jumlah = Integer.parseInt(inputSplit[1].trim());
+        
+        if (nomorMenu >= 0 && nomorMenu < Minuman.length){
+            pesananMinum[i] = Minuman[nomorMenu];
+            jumlahPesananMinum[i] = jumlah;
+            totalBiayaMinuman += jumlah * HargaMinuman[nomorMenu];
+        }       
+    }
+    
+    //Hitung Pajak
+    double pajak = 0.1 * (totalBiayaMakanan + totalBiayaMinuman);
+    
+    //Diskon 10% jika total melebihi Rp 100.000
+    if (totalBiayaMakanan + totalBiayaMinuman > 100000){
+        double diskonMakanan = 0.1 * totalBiayaMakanan;
+        double diskonMinuman = 0.1 * totalBiayaMinuman;
+        totalBiayaMakanan -= diskonMakanan;
+        totalBiayaMinuman -= diskonMinuman;
+    }
+    
+    //Cetak Struk pesanan
+    System.out.println("==============================");
+    System.out.println("Struk Pesanan");
+    for(int i=0; i < pesanan.length; i++){
+        if (pesanan[i] != null){
+            System.out.println (pesanan[i] + "- Rp." + HargaMakanan[i] + "x" + jumlahPesanan[i]);
+        }
+    }
+    for(int i=0; i < pesananMinum.length; i++){
+        if (pesananMinum[i] != null){
+            System.out.println(pesananMinum[i] + "- Rp." + HargaMinuman[i] + "x" + jumlahPesananMinum[i]);
+        }
+    }
+    
+    double biayaKeseluruhanFix = totalBiayaMakanan + totalBiayaMinuman + pajak + 20000;
+    System.out.println("==============================");
+    System.out.println("Total Biaya Makanan: Rp." + totalBiayaMakanan);
+    System.out.println("Total Biaya Minuman: Rp." + totalBiayaMinuman);
+    System.out.println("Pajak 10%: Rp." + pajak);
+    System.out.println("Biaya Pelayanan: Rp. 20000.0");
+    System.out.println("==============================");
+    System.out.println("Total: Rp. " + biayaKeseluruhanFix);
+
+    //Penawaran
+    if(biayaKeseluruhanFix > 50000){
+        System.out.println("Selamat Total pesanan Anda melebihi Rp 50.000 anda mendapatkan voucher 'beli satu gratis satu' untuk kategori minuman. Apakah akan diambil?");
+        String pilihan = scanner.nextLine();
+        if(pilihan.equalsIgnoreCase("Ya")){
+            for (int i=0; i<HargaMinuman.length; i++){
+                if (jumlahPesananMinum[1] > 0){
+                    int jumlahGratis = jumlahPesananMinum[i];
+                    totalBiayaMinuman -= jumlahGratis * HargaMinuman[i];
+                }
+            }
+        }
+    }   
+    }
+}
